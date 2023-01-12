@@ -1,9 +1,10 @@
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+from sqlalchemy.exc import SQLAlchemyError
+
+from db import db
 from models import StoreModel, TagModel, ItemModel
 from schemas import TagSchema, ItemTagSchema
-from db import db
-from sqlalchemy.exc import SQLAlchemyError
 
 blp = Blueprint("tags", __name__, description="Operations on tags")
 
@@ -18,7 +19,8 @@ class TagsInStore(MethodView):
     @blp.arguments(TagSchema)
     @blp.response(201, TagSchema)
     def post(self, tag_data, store_id):
-        if TagModel.query.filter(TagModel.store_id == tag_data["store_id"] and TagModel.name == tag_data["name"]).first():
+        if TagModel.query.filter(
+                TagModel.store_id == tag_data["store_id"] and TagModel.name == tag_data["name"]).first():
             abort(400, messaage="A tag with that name already exists in the store.")
         tag = TagModel(**tag_data)
         try:
@@ -71,7 +73,8 @@ class Tag(MethodView):
 
     @blp.response(202, description="Deletes a tag if no item is tagged with it.", example={"message": "Tag deleted."})
     @blp.alt_response(404, description="Tag not found.")
-    @blp.alt_response(400, description="Returned if the tag is assigned to one or more items. In this case, tage is not deleted.")
+    @blp.alt_response(400,
+                      description="Returned if the tag is assigned to one or more items. In this case, tage is not deleted.")
     def delete(self, tag_id):
         tag = TagModel.query.get_or_404(tag_id)
 

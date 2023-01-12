@@ -1,6 +1,7 @@
 import os
-import requests
+
 import jinja2
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
