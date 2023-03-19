@@ -1,5 +1,4 @@
 # Shopping App
-<hr/>
 Shopping App is a mini learning project. It is a REST API application with features to add items, stores, tags and users.
 
 
